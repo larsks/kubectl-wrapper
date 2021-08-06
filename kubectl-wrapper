@@ -32,8 +32,19 @@ find_kubeconfig() {
 
 
 if _kubeconfig=$(find_kubeconfig); then
-	LOG 1 "found .kubeconfig: $_kubeconfig"
+	LOG 1 "found .kubeconfig $_kubeconfig"
 	export KUBECONFIG=$_kubeconfig
+
+	# This is mostly a hack to work around the fact that running
+	# `oc login` removes any proxy configuration from .kubeconfig,
+	# so we need to specify proxies via environment variables
+	# instead.
+	if [[ -f ${_kubeconfig}.env ]]; then
+		LOG 1 "found .kuebconfig.env ${_kubeconfig}.env"
+		set -a
+		. ${_kubeconfig}.env
+		set +a
+	fi
 else
 	LOG 1 "did not find .kubeconfig"
 fi
