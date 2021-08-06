@@ -49,4 +49,8 @@ else
 	LOG 1 "did not find .kubeconfig"
 fi
 
-exec kubectl "$@"
+if [[ $1 == "oc" ]]; then
+	exec "$@"
+else
+	exec kubectl "$@"
+fi
