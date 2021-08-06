@@ -1,0 +1,41 @@
+#!/bin/bash
+
+: ${K_LOGLEVEL:=2}
+
+LOG() {
+	local level=$1
+	shift
+
+	if [[ $level -ge $K_LOGLEVEL ]]; then
+		echo "$*" >&2
+	fi
+}
+
+find_kubeconfig() {
+(
+	local _kubeconfigs=()
+
+	while [[ $PWD != / ]]; do
+		LOG 0 "looking for kubeconfig in $PWD"
+
+		if [[ -f .kubeconfig ]]; then
+			echo "$PWD/.kubeconfig"
+			return 0
+		fi
+
+		cd ..
+	done
+
+	return 1
+)
+}
+
+
+if _kubeconfig=$(find_kubeconfig); then
+	LOG 1 "found .kubeconfig: $_kubeconfig"
+	export KUBECONFIG=$_kubeconfig
+else
+	LOG 1 "did not find .kubeconfig"
+fi
+
+exec kubectl "$@"
