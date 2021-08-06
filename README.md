@@ -18,3 +18,27 @@ k get pod
 
 With appropriately placed `.kubeconfig` files, this will Do the Right
 Thing as I move between project directories.
+
+## Support for `oc`
+
+If the first argument passed to the wrapper is `oc`, `kubectl-wrapper`
+will execute the remainder of the command line using `oc` instead of
+`kubectl`:
+
+```
+$ k oc whoami
+```
+
+If you use `oc` all the time, you can instead set the `K_USE_OC`
+environment variable, which will cause the wrapper to always use `oc`:
+
+```
+$ export K_USE_OC=1
+$ k whoami
+```
+
+## Logging
+
+The `$K_LOGLEVEL` environment variable controls logging verbosity. Set
+`K_LOGLEVEL=1` for verbose messages, and `K_LOGLEVEL=0` for debug
+messages.

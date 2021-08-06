@@ -49,7 +49,9 @@ else
 	LOG 1 "did not find .kubeconfig"
 fi
 
-if [[ $1 == "oc" ]]; then
+if [[ $K_USE_OC ]]; then
+	exec oc "$@"
+elif [[ $1 == "oc" ]]; then
 	exec "$@"
 else
 	exec kubectl "$@"
